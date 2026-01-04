@@ -1,13 +1,13 @@
 # Docker Compose file for Dokploy deployment
-# Use this file in Dokploy: docker-compose -f docker-compose.dokploy.yml up
+# Dokploy uses Traefik for routing - no host port bindings needed
 
 services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     environment:
@@ -20,8 +20,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     hostname: backend
-    ports:
-      - "3001:80"
+    expose:
+      - "80"
     depends_on:
       postgres:
         condition: service_healthy
