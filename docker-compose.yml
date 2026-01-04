@@ -1,0 +1,59 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    environment:
+      - API_URL=http://backend:80
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    hostname: backend
+    ports:
+      - "8080:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=${DB_NAME:-app_db}
+      - DB_USER=${DB_USER:-app_user}
+      - DB_PASSWORD=${DB_PASSWORD:-app_password}
+    networks:
+      - app-network
+    dns:
+      - 127.0.0.11
+
+  postgres:
+    image: postgres:15-alpine
+    hostname: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME:-app_db}
+      - POSTGRES_USER=${DB_USER:-app_user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-app_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-app_user} -d ${DB_NAME:-app_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
