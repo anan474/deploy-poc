@@ -54,9 +54,9 @@ A simple full-stack web application designed for deployment on [Dokploy](https:/
    ```
 
 4. Access the application:
-   - Frontend: http://localhost
-   - Backend API: http://localhost:8080/api
-   - Health Check: http://localhost:8080/api/health
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001/api
+   - Health Check: http://localhost:3001/api/health
    - PostgreSQL: localhost:5433
 
 ## Dokploy Deployment

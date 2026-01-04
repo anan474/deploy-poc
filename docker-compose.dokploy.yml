@@ -7,7 +7,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - backend
     environment:
@@ -19,8 +19,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    hostname: backend
     ports:
-      - "8080:80"
+      - "3001:80"
     depends_on:
       postgres:
         condition: service_healthy
@@ -34,6 +35,7 @@ services:
 
   postgres:
     image: postgres:15-alpine
+    hostname: postgres
     environment:
       - POSTGRES_DB=${DB_NAME:-app_db}
       - POSTGRES_USER=${DB_USER:-app_user}
